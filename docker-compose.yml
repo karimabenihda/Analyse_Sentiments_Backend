@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: Analyse_Sentiment
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+  # --- Service 2 : Backend (FastAPI) ---
+  backend:
+    build:
+      context: ./backend 
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:root@db:5432/Analyse_Sentiment 
+    depends_on:
+      - db
+volumes:
+  postgres_data:
